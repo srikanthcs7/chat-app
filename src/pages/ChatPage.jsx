@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ChatBox from "../components/organisms/ChatBox";
 import MessageDisplay from "../components/organisms/MessageDisplay";
 import styled from "styled-components";
@@ -17,6 +17,7 @@ function ChatPage() {
   const [loading, setLoading] = useState(true);
   const [emojiAnchorEl, setEmojiAnchorEl] = useState(null);
   const [selectedMessage, setSelectedMessage] = useState(null);
+  const messageEndRef = useRef(null);
 
   useEffect(() => {
     const loadMessages = async () => {
@@ -37,12 +38,17 @@ function ChatPage() {
     if (messages.length > 0) {
       const audio = new Audio("/notification.wav");
       audio.play();
+      scrollToBottom();
     }
   }, [messages]);
 
+  const scrollToBottom = () => {
+    messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   const handleEmojiClick = (emoji) => {
     const updatedMessages = messages.map((msg, index) =>
-      index === selectedMessage ? { ...msg, reaction: emoji.emoji } : msg
+      index === selectedMessage ? { ...msg, reaction: emoji } : msg
     );
     setMessages(updatedMessages);
     setEmojiAnchorEl(null);
@@ -59,7 +65,6 @@ function ChatPage() {
   };
 
   const handleClearMessages = () => {
-    console.log("--");
     clearMessages();
     setMessages([]);
     localStorage.removeItem("chatMessages");
@@ -102,6 +107,7 @@ function ChatPage() {
         handleEmojiClose={handleEmojiClose}
         handleEmojiOpen={handleEmojiOpen}
         handleClearMessages={handleClearMessages}
+        messageEndRef={messageEndRef}
       />
       <ChatBox handleSend={handleSend} />
     </ChatPageWrapper>

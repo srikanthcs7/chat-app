@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Box, TextField, Button } from "@mui/material";
 import styled from "styled-components";
 
-const ChatBoxWrapper = styled(Box)`
+const ChatBoxWrapper = styled.form`
   display: flex;
   padding: 16px;
   border-top: 1px solid #e0e0e0;
@@ -12,7 +12,13 @@ function ChatBox({ handleSend }) {
   const [message, setMessage] = useState("");
 
   return (
-    <ChatBoxWrapper>
+    <ChatBoxWrapper
+      onSubmit={(e) => {
+        e.preventDefault();
+        setMessage("");
+        handleSend(message);
+      }}
+    >
       <TextField
         fullWidth
         variant="outlined"
@@ -23,10 +29,7 @@ function ChatBox({ handleSend }) {
       <Button
         variant="contained"
         color="primary"
-        onClick={() => {
-          setMessage("");
-          handleSend(message);
-        }}
+        type="submit"
         sx={{ marginLeft: "4px" }}
       >
         Send

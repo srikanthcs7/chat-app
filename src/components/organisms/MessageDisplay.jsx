@@ -33,6 +33,7 @@ const MessageItem = styled.li`
 
 const MessageBubble = styled.div`
   max-width: 60%;
+  min-width: max-content;
   padding: 4px;
   border-radius: 8px;
   background-color: ${(props) =>
@@ -68,11 +69,10 @@ function MessageDisplay({
   messages,
   loading,
   emojiAnchorEl,
-  selectedMessage,
   handleEmojiClick,
   handleEmojiClose,
   handleEmojiOpen,
-  handleClearMessages,
+  messageEndRef,
 }) {
   return (
     <Box flexGrow={1} overflow="auto" margin={"16px"}>
@@ -90,9 +90,17 @@ function MessageDisplay({
           {messages.map((message, index) => (
             <MessageItem key={index} sender={message.sender}>
               <MessageBubble sender={message.sender}>
-                <Typography variant="body1" sx={{ margin: "8px" }}>
-                  {message.text}
-                </Typography>
+                <Box>
+                  <Typography
+                    variant="caption"
+                    sx={{ margin: "8px", fontWeight: 500 }}
+                  >
+                    {message.sender === "bot" ? "Bot" : "You"}
+                  </Typography>
+                  <Typography variant="body1" sx={{ margin: "8px" }}>
+                    {message.text}
+                  </Typography>
+                </Box>
                 <Typography
                   variant="caption"
                   sx={{ alignSelf: "flex-end", marginTop: "4px" }}
@@ -118,6 +126,7 @@ function MessageDisplay({
               </MessageBubble>
             </MessageItem>
           ))}
+          <div ref={messageEndRef}></div>
         </MessageList>
       )}
       <EmojiPicker
